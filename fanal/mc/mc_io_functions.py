@@ -95,4 +95,11 @@ def get_num_mc_particles(extents: pd.DataFrame, event_number: int) -> int :
     return num_parts
 
 
+def get_primary_particles(iFileName: str) -> pd.DataFrame :
+    
+    parts = load_mc_particles(iFileName)
+
+    return parts[parts.primary]
+
+
 

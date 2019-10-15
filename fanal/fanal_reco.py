@@ -48,6 +48,7 @@ from fanal.core.fanal_types   import DetName
 from fanal.mc.mc_io_functions import load_mc_particles
 from fanal.mc.mc_io_functions import load_mc_hits
 from fanal.mc.mc_io_functions import get_num_mc_particles
+from fanal.mc.mc_io_functions import get_primary_particles
 
 from fanal.mc.mc_utilities    import print_mc_event
 from fanal.mc.mc_utilities    import plot_mc_event
@@ -178,6 +179,9 @@ def fanal_reco(det_name,    # Detector name: 'new', 'next100', 'next500'
         # Getting mc hits
         file_mcHits = load_mc_hits(iFileName)
 
+        # Getting mc primary particle kinetic energies
+        primary_parts = get_primary_particles(iFileName)
+
         # Looping through all the events in iFile
         for event_number in file_event_numbers:
 
@@ -188,6 +192,9 @@ def fanal_reco(det_name,    # Detector name: 'new', 'next100', 'next500'
             # Getting event data
             event_data = get_event_reco_data()
             event_data['event_id'] = event_number
+
+            event_data['primary_kEng'] = primary_parts.loc[event_number,
+                                                           'kin_energy'].iloc[0]
             
             event_mcHits  = file_mcHits.loc[event_number, :]
             event_mcHits  = event_mcHits[  (event_mcHits.time >= min_time)

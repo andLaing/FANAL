@@ -57,6 +57,7 @@ def get_event_reco_data() -> Dict[str, Any]:
     """
     event_data : Dict[str, Any] = {
         'event_id'     : np.nan,
+        'primary_kEng' : np.nan,
         'num_MCparts'  : np.nan, 
         'num_MChits'   : np.nan,  
         'mcE'          : np.nan,
