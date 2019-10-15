@@ -74,12 +74,13 @@ def fanal_reco(det_name,    # Detector name: 'new', 'next100', 'next500'
                file_out,    # Output file
                compression, # Compression of output file: 'ZLIB1', 'ZLIB4',
                             # 'ZLIB5', 'ZLIB9', 'BLOSC5', 'BLZ4HC5'
-               verbosity_level):
+               verbosity_level,
+               min_time = 0,
+               max_time = np.inf):
 
 
     ### LOGGER
     logger = get_logger('FanalReco', verbosity_level)
-
 
     ### DETECTOR NAME & its ACTIVE dimensions
     det_name = getattr(DetName, det_name)
@@ -189,6 +190,9 @@ def fanal_reco(det_name,    # Detector name: 'new', 'next100', 'next500'
             event_data['event_id'] = event_number
             
             event_mcHits  = file_mcHits.loc[event_number, :]
+            event_mcHits  = event_mcHits[  (event_mcHits.time >= min_time)
+                                         & (event_mcHits.time <  max_time)]
+
             active_mcHits = event_mcHits[event_mcHits.label == 'ACTIVE'].copy()
 
             event_data['num_MCparts'] = get_num_mc_particles(file_extents, event_number)
@@ -203,7 +207,6 @@ def fanal_reco(det_name,    # Detector name: 'new', 'next100', 'next500'
                 
             # Smearing the event energy
             event_data['smE'] = smear_evt_energy(event_data['mcE'], sigma_Qbb, Qbb)
-
             # Applying the smE filter
             event_data['smE_filter'] = (e_min <= event_data['smE'] <= e_max)
 
