@@ -205,7 +205,7 @@ def fanal_reco(det_name,    # Detector name: 'new', 'next100', 'next500'
             if (event_type == 'Bi214'):
                 event_data['mcE'] = get_mc_energy(active_mcHits)
             else:
-                event_data['mcE'] = active_mcHits.E.sum()
+                event_data['mcE'] = active_mcHits.energy.sum()
                 
             # Smearing the event energy
             event_data['smE'] = smear_evt_energy(event_data['mcE'], sigma_Qbb, Qbb)
