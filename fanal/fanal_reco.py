@@ -45,7 +45,6 @@ from fanal.core.detector      import get_active_size
 from fanal.core.detector      import get_fiducial_size
 from fanal.core.fanal_types   import DetName
 
-from fanal.mc.mc_io_functions import load_mc_particles
 from fanal.mc.mc_io_functions import load_mc_hits
 from fanal.mc.mc_io_functions import get_num_mc_particles
 from fanal.mc.mc_io_functions import get_primary_particles
@@ -170,20 +169,16 @@ def fanal_reco(det_name,    # Detector name: 'new', 'next100', 'next500'
         simulated_events += int(configuration_df[configuration_df.param_key == 'num_events'].param_value)
         stored_events    += int(configuration_df[configuration_df.param_key == 'saved_events'].param_value)
 
-        # Getting event numbers
-        file_extents = pd.read_hdf(iFileName, '/MC/extents', mode='r')
-        file_event_numbers = file_extents.evt_number
-
-        print('* Processing {0}  ({1} events) ...'.format(iFileName, len(file_event_numbers)))
-
         # Getting mc hits
         file_mcHits = load_mc_hits(iFileName)
 
         # Getting mc primary particle kinetic energies
         primary_parts = get_primary_particles(iFileName)
 
+        print('* Processing {0}  ({1} events) ...'.format(iFileName, file_mcHits.levels[0].unique().shape))
+
         # Looping through all the events in iFile
-        for event_number in file_event_numbers:
+        for event_number in file_mcHits.levels[0].unique():
 
             # Updating counter of analyzed events
             analyzed_events += 1
@@ -196,13 +191,13 @@ def fanal_reco(det_name,    # Detector name: 'new', 'next100', 'next500'
             event_data['primary_kEng'] = primary_parts.loc[event_number,
                                                            'kin_energy'].iloc[0]
             
-            event_mcHits  = file_mcHits.loc[event_number, :]
+            event_mcHits  = file_mcHits.loc[event_number]
             event_mcHits  = event_mcHits[  (event_mcHits.time >= min_time)
                                          & (event_mcHits.time <  max_time)]
 
             active_mcHits = event_mcHits[event_mcHits.label == 'ACTIVE'].copy()
 
-            event_data['num_MCparts'] = get_num_mc_particles(file_extents, event_number)
+            event_data['num_MCparts'] = get_num_mc_particles(iFileName, event_number)
             event_data['num_MChits']  = len(active_mcHits)
             
             # The event mc energy is the sum of the energy of all the hits except

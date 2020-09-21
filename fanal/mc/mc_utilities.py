@@ -13,7 +13,6 @@ from mpl_toolkits.mplot3d import Axes3D
 from typing import Sequence, Union, Dict, Any, List, Mapping
 
 import invisible_cities.core.system_of_units as units
-from invisible_cities.evm.event_model        import MCParticle
 
 from fanal.mc.mc_io_functions  import load_mc_particles
 from fanal.mc.mc_io_functions  import load_mc_hits
