@@ -175,10 +175,10 @@ def fanal_reco(det_name,    # Detector name: 'new', 'next100', 'next500'
         # Getting mc primary particle kinetic energies
         primary_parts = get_primary_particles(iFileName)
 
-        print('* Processing {0}  ({1} events) ...'.format(iFileName, file_mcHits.levels[0].unique().shape))
+        print('* Processing {0}  ({1} events) ...'.format(iFileName, file_mcHits.index.levels[0].unique().shape))
 
         # Looping through all the events in iFile
-        for event_number in file_mcHits.levels[0].unique():
+        for event_number in file_mcHits.index.levels[0].unique():
 
             # Updating counter of analyzed events
             analyzed_events += 1
